@@ -1,0 +1,9 @@
+{
+    "host": "localhost",
+    "port": 5000,
+    "replicas": [
+      {"host": "localhost", "port": 5001},
+      {"host": "localhost", "port": 5002}
+    ]
+  }
+  
