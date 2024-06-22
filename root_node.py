@@ -1,7 +1,6 @@
 import socket
 import threading
 import json
-import time
 
 # Carregar configurações
 with open('root_config.json', 'r') as f:
@@ -16,7 +15,6 @@ def handle_client(client_socket):
     print(f"[Root Node] Received query: {request}")
     keywords = request.split()
 
-    keywords_per_replica = len(keywords) // len(REPLICAS)
     results = []
 
     def query_replica(replica, keywords):
@@ -31,22 +29,24 @@ def handle_client(client_socket):
 
     threads = []
     for i, replica in enumerate(REPLICAS):
-        start = i * keywords_per_replica
-        end = (i + 1) * keywords_per_replica if i < len(REPLICAS) - 1 else len(keywords)
-        thread = threading.Thread(target=query_replica, args=(replica, keywords[start:end]))
+        thread = threading.Thread(target=query_replica, args=(replica, keywords))
         threads.append(thread)
         thread.start()
 
     for thread in threads:
         thread.join()
 
+    # Combinar resultados
     combined_results = {}
     for result in results:
-        for doc, count in result.items():
-            if doc in combined_results:
-                combined_results[doc] += count
-            else:
-                combined_results[doc] = count
+        for doc, counts in result.items():
+            if doc not in combined_results:
+                combined_results[doc] = {}
+            for word, count in counts.items():
+                if word in combined_results[doc]:
+                    combined_results[doc][word] += count
+                else:
+                    combined_results[doc][word] = count
 
     client_socket.send(json.dumps(combined_results).encode('utf-8'))
     print(f"[Root Node] Sent combined results to client: {combined_results}")

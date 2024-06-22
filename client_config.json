@@ -1,6 +1,6 @@
 {
     "host": "localhost",
     "port": 5000,
-    "requests": ["word1 word2 lorenzo", "word3 word4"]
+    "requests": ["word1 word2 lorenzo", "word3 word4 esse"]
   }
   

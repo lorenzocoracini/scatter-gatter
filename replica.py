@@ -12,15 +12,18 @@ PORT = config['port']
 DOCUMENTS_DIR = './documents'
 
 def search_documents(keywords):
-    print('numero deocumentos -- ',len(os.listdir(DOCUMENTS_DIR)))
     results = {}
     for filename in os.listdir(DOCUMENTS_DIR):
         if filename.endswith('.txt'):
             with open(os.path.join(DOCUMENTS_DIR, filename), 'r') as f:
                 content = f.read()
-                count = sum(content.count(keyword) for keyword in keywords)
-                if count > 0:
-                    results[filename] = count
+                doc_results = {}
+                for keyword in keywords:
+                    count = content.count(keyword)
+                    if count > 0:
+                        doc_results[keyword] = count
+                if doc_results:
+                    results[filename] = doc_results
     return results
 
 def handle_root_node(root_socket):
