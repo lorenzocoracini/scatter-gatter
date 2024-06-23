@@ -19,7 +19,7 @@ def handle_client(client_socket):
     def query_replica(replica, keywords):
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         s.connect(replica)
-        print(f"[Root Node] Mandando palavras {keywords} to replica {replica}")
+        print(f"[Root Node] Mandando palavras {keywords} para replica {replica}")
         s.send(json.dumps(keywords).encode('utf-8'))
         response = s.recv(4096).decode('utf-8')
         print(f"[Root Node] Resposta recebida pela replica {replica}")
